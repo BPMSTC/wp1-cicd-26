@@ -1,0 +1,19 @@
+@model GalacticMissionControl.Web.ViewModels.MissionFormViewModel
+@{
+    ViewData["Title"] = "Edit Mission";
+}
+
+<section class="panel">
+    <h1>Edit Mission</h1>
+    <p class="lead">Update operational details before the next command cycle.</p>
+
+    <form asp-action="Edit" method="post" class="mission-form">
+        <input asp-for="Mission.MissionId" type="hidden" />
+        @Html.Partial("_MissionForm", Model)
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Details" asp-route-id="@Model.Mission.MissionId" class="btn btn-secondary">Back</a>
+        </div>
+    </form>
+</section>
+
