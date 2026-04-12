@@ -1,0 +1,27 @@
+@model IReadOnlyList<MissionSummary>
+@{
+    ViewData["Title"] = "Missions";
+}
+
+<section class="panel">
+    <h1>Mission Queue</h1>
+    <table class="mission-table">
+        <thead>
+            <tr>
+                <th>Call Sign</th>
+                <th>Objective</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var mission in Model)
+            {
+                <tr>
+                    <td>@mission.CodeName</td>
+                    <td>@mission.Objective</td>
+                    <td>@mission.Status</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
