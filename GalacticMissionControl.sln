@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalacticMissionControl.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalacticMissionControl.Tests.Integration", "GalacticMissionControl.Tests.Integration/GalacticMissionControl.Tests.Integration.csproj", "{B4F6D149-6867-4ED0-83E8-8F00167D3E38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GalacticMissionControl.Tests.E2E", "GalacticMissionControl.Tests.E2E/GalacticMissionControl.Tests.E2E.csproj", "{C9D51A37-6D2A-4AD4-9913-2BD5DB95F74D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{B4F6D149-6867-4ED0-83E8-8F00167D3E38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4F6D149-6867-4ED0-83E8-8F00167D3E38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4F6D149-6867-4ED0-83E8-8F00167D3E38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9D51A37-6D2A-4AD4-9913-2BD5DB95F74D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9D51A37-6D2A-4AD4-9913-2BD5DB95F74D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9D51A37-6D2A-4AD4-9913-2BD5DB95F74D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9D51A37-6D2A-4AD4-9913-2BD5DB95F74D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
