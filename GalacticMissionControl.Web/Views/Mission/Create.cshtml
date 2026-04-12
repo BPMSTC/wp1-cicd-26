@@ -1,0 +1,18 @@
+@model GalacticMissionControl.Web.ViewModels.MissionFormViewModel
+@{
+    ViewData["Title"] = "Create Mission";
+}
+
+<section class="panel">
+    <h1>Launch New Mission</h1>
+    <p class="lead">Register a mission profile for command review.</p>
+
+    <form asp-action="Create" method="post" class="mission-form">
+        @Html.Partial("_MissionForm", Model)
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Mission</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</section>
+

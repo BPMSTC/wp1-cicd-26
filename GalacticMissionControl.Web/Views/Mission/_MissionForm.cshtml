@@ -1,0 +1,53 @@
+@model GalacticMissionControl.Web.ViewModels.MissionFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+<div class="form-grid">
+    <div class="form-field">
+        <label asp-for="Mission.Title"></label>
+        <input asp-for="Mission.Title" class="input" />
+        <span asp-validation-for="Mission.Title" class="validation"></span>
+    </div>
+
+    <div class="form-field">
+        <label asp-for="Mission.AssignedSector"></label>
+        <input asp-for="Mission.AssignedSector" class="input" />
+        <span asp-validation-for="Mission.AssignedSector" class="validation"></span>
+    </div>
+
+    <div class="form-field">
+        <label asp-for="Mission.Commander"></label>
+        <input asp-for="Mission.Commander" class="input" />
+        <span asp-validation-for="Mission.Commander" class="validation"></span>
+    </div>
+
+    <div class="form-field">
+        <label asp-for="Mission.Priority"></label>
+        <select asp-for="Mission.Priority" asp-items="Model.PriorityOptions" class="input"></select>
+        <span asp-validation-for="Mission.Priority" class="validation"></span>
+    </div>
+
+    <div class="form-field">
+        <label asp-for="Mission.Status"></label>
+        <select asp-for="Mission.Status" asp-items="Model.StatusOptions" class="input"></select>
+        <span asp-validation-for="Mission.Status" class="validation"></span>
+    </div>
+
+    <div class="form-field">
+        <label asp-for="Mission.ThreatLevel"></label>
+        <select asp-for="Mission.ThreatLevel" asp-items="Model.ThreatLevelOptions" class="input"></select>
+        <span asp-validation-for="Mission.ThreatLevel" class="validation"></span>
+    </div>
+
+    <div class="form-field">
+        <label asp-for="Mission.LaunchDate"></label>
+        <input asp-for="Mission.LaunchDate" class="input" />
+        <span asp-validation-for="Mission.LaunchDate" class="validation"></span>
+    </div>
+
+    <div class="form-field form-field-full">
+        <label asp-for="Mission.Description"></label>
+        <textarea asp-for="Mission.Description" rows="4" class="input"></textarea>
+        <span asp-validation-for="Mission.Description" class="validation"></span>
+    </div>
+</div>

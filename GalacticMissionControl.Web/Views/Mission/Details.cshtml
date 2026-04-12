@@ -1,0 +1,37 @@
+@model GalacticMissionControl.Web.Models.Mission
+@{
+    ViewData["Title"] = "Mission Details";
+}
+
+<section class="panel">
+    <div class="page-header">
+        <h1>@Model.Title</h1>
+        <span class="chip">@Model.Status</span>
+    </div>
+
+    <dl class="detail-grid">
+        <dt>Assigned Sector</dt>
+        <dd>@Model.AssignedSector</dd>
+
+        <dt>Commander</dt>
+        <dd>@(string.IsNullOrWhiteSpace(Model.Commander) ? "Unassigned" : Model.Commander)</dd>
+
+        <dt>Priority</dt>
+        <dd>@Model.Priority</dd>
+
+        <dt>Threat Level</dt>
+        <dd>@Model.ThreatLevel</dd>
+
+        <dt>Launch Date</dt>
+        <dd>@Model.LaunchDate.ToString("yyyy-MM-dd")</dd>
+
+        <dt>Description</dt>
+        <dd>@(string.IsNullOrWhiteSpace(Model.Description) ? "No mission briefing attached." : Model.Description)</dd>
+    </dl>
+
+    <div class="form-actions">
+        <a asp-action="Edit" asp-route-id="@Model.MissionId" class="btn btn-primary">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.MissionId" class="btn btn-danger">Delete</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to Board</a>
+    </div>
+</section>

@@ -1,27 +1,67 @@
-@model IReadOnlyList<MissionSummary>
+@model GalacticMissionControl.Web.ViewModels.MissionIndexViewModel
 @{
-    ViewData["Title"] = "Missions";
+    ViewData["Title"] = "Mission Board";
 }
 
 <section class="panel">
-    <h1>Mission Queue</h1>
+    <div class="page-header">
+        <h1>Mission Board</h1>
+        <a asp-action="Create" class="btn btn-primary">+ New Mission</a>
+    </div>
+
+    <form method="get" class="filter-bar">
+        <div class="form-field compact">
+            <label for="status">Status</label>
+            <select id="status" name="status" asp-items="Model.StatusOptions" class="input"></select>
+        </div>
+        <div class="form-field compact">
+            <label for="threatLevel">Threat Level</label>
+            <select id="threatLevel" name="threatLevel" asp-items="Model.ThreatLevelOptions" class="input"></select>
+        </div>
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-primary">Apply Filter</button>
+            <a asp-action="Index" class="btn btn-secondary">Clear</a>
+        </div>
+    </form>
+
     <table class="mission-table">
         <thead>
             <tr>
-                <th>Call Sign</th>
-                <th>Objective</th>
+                <th>Title</th>
+                <th>Sector</th>
+                <th>Commander</th>
                 <th>Status</th>
+                <th>Threat</th>
+                <th>Launch</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var mission in Model)
+        @if (Model.Missions.Count == 0)
+        {
+            <tr>
+                <td colspan="7" class="empty-state">No missions match the selected scan filters.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var mission in Model.Missions)
             {
                 <tr>
-                    <td>@mission.CodeName</td>
-                    <td>@mission.Objective</td>
-                    <td>@mission.Status</td>
+                    <td>@mission.Title</td>
+                    <td>@mission.AssignedSector</td>
+                    <td>@(string.IsNullOrWhiteSpace(mission.Commander) ? "Unassigned" : mission.Commander)</td>
+                    <td><span class="chip">@mission.Status</span></td>
+                    <td>@mission.ThreatLevel</td>
+                    <td>@mission.LaunchDate.ToString("yyyy-MM-dd")</td>
+                    <td class="table-actions">
+                        <a asp-action="Details" asp-route-id="@mission.MissionId">Details</a>
+                        <a asp-action="Edit" asp-route-id="@mission.MissionId">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@mission.MissionId" class="danger-link">Delete</a>
+                    </td>
                 </tr>
             }
+        }
         </tbody>
     </table>
 </section>

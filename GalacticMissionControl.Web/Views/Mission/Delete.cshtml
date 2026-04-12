@@ -1,0 +1,29 @@
+@model GalacticMissionControl.Web.Models.Mission
+@{
+    ViewData["Title"] = "Delete Mission";
+}
+
+<section class="panel">
+    <h1>Confirm Mission Deletion</h1>
+    <p class="lead warning">You are about to purge this mission record from command archives.</p>
+
+    <dl class="detail-grid">
+        <dt>Mission</dt>
+        <dd>@Model.Title</dd>
+
+        <dt>Status</dt>
+        <dd>@Model.Status</dd>
+
+        <dt>Threat Level</dt>
+        <dd>@Model.ThreatLevel</dd>
+
+        <dt>Launch Date</dt>
+        <dd>@Model.LaunchDate.ToString("yyyy-MM-dd")</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post" class="form-actions">
+        <input type="hidden" asp-for="MissionId" />
+        <button type="submit" class="btn btn-danger">Delete Mission</button>
+        <a asp-action="Details" asp-route-id="@Model.MissionId" class="btn btn-secondary">Cancel</a>
+    </form>
+</section>
