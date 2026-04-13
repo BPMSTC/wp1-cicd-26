@@ -64,6 +64,16 @@ pwsh GalacticMissionControl.Tests.E2E/bin/Debug/net10.0/playwright.ps1 install -
 dotnet test GalacticMissionControl.Tests.E2E/GalacticMissionControl.Tests.E2E.csproj
 ```
 
+
+## Deployment and configuration guide (PR 15)
+
+See [`DEPLOYMENT.md`](DEPLOYMENT.md) for a student-friendly deployment guide that explains:
+
+- Which values belong in Azure App Service **Application settings**.
+- Where to store the SQL connection string (`DefaultConnection`) in App Service **Connection strings**.
+- Why secrets must not be committed to Git history.
+- Which GitHub variables/secrets are required by deployment workflows.
+
 ## Notes
 
 - MVC is enabled with controllers and views.
