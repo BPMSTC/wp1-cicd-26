@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore GalacticMissionControl.sln
+
+      - name: Build solution
+        # --no-restore keeps this fast and reinforces pipeline stage boundaries.
+        run: dotnet build GalacticMissionControl.sln --configuration Release --no-restore
+
+      - name: Run unit tests
+        run: dotnet test GalacticMissionControl.Tests.Unit/GalacticMissionControl.Tests.Unit.csproj --configuration Release --no-build
+
+      - name: Run integration tests
+        run: dotnet test GalacticMissionControl.Tests.Integration/GalacticMissionControl.Tests.Integration.csproj --configuration Release --no-build
+
+      - name: Install Playwright browsers
+        # The script is generated during build/test and installs required browser binaries.
+        run: pwsh GalacticMissionControl.Tests.E2E/bin/Release/net10.0/playwright.ps1 install --with-deps
+
+      - name: Run end-to-end tests
+        run: dotnet test GalacticMissionControl.Tests.E2E/GalacticMissionControl.Tests.E2E.csproj --configuration Release --no-build
