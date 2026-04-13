@@ -1,0 +1,43 @@
+## .NET build artifacts
+bin/
+obj/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Rider
+.idea/
+
+## NuGet
+*.nupkg
+*.snupkg
+packages/
+!**/packages/build/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Test results
+TestResults/
+coverage/
+*.trx
+*.coveragexml
+
+## Publish output
+publish/
+**/Properties/launchSettings.json
+
+## Secrets and local environment overrides — never commit these
+appsettings.Secrets.json
+appsettings.*.Secrets.json
+secrets.json
+.env
+.env.*
+
+## OS files
+.DS_Store
+Thumbs.db
