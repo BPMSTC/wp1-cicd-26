@@ -14,6 +14,10 @@ dotnet run --project GalacticMissionControl.Web
 
 3. Open `http://localhost:5121` (or the HTTPS URL shown in output).
 
+## Student testing documentation (PR 10)
+
+See [`TESTING.md`](TESTING.md) for a student-friendly guide to unit, integration, and end-to-end testing, including Playwright setup and troubleshooting.
+
 ## End-to-end tests (PR 9)
 
 A Playwright for .NET E2E project is included at `GalacticMissionControl.Tests.E2E`.
