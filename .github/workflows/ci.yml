@@ -7,6 +7,44 @@ on:
       - main
 
 jobs:
+  dependency-security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore GalacticMissionControl.sln
+
+      - name: Generate vulnerability report
+        run: dotnet list GalacticMissionControl.sln package --vulnerable --include-transitive --format json > dependency-vulnerability-report.json
+
+      - name: Upload vulnerability report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-vulnerability-report
+          path: dependency-vulnerability-report.json
+
+      - name: Fail on high or critical vulnerabilities
+        run: |
+          jq -e '
+            [
+              .projects[].frameworks[]
+              | (.topLevelPackages[]?, .transitivePackages[]?)
+              | .vulnerabilities[]?
+              | (.severity // "")
+              | ascii_downcase
+              | select(. == "high" or . == "critical")
+            ]
+            | length == 0
+          ' dependency-vulnerability-report.json
+
   build-and-test:
     runs-on: ubuntu-latest
 

@@ -18,6 +18,25 @@ dotnet run --project GalacticMissionControl.Web
 
 See [`TESTING.md`](TESTING.md) for a student-friendly guide to unit, integration, and end-to-end testing, including Playwright setup and troubleshooting.
 
+## Dependency security gate (PR 12)
+
+CI now includes a `dependency-security` job in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) that runs:
+
+```bash
+dotnet list GalacticMissionControl.sln package --vulnerable --include-transitive --format json
+```
+
+What it does:
+
+- Scans NuGet dependencies (including transitive packages) for known vulnerabilities.
+- Uploads a `dependency-vulnerability-report.json` artifact in the workflow run.
+- Fails the workflow if any **high** or **critical** severity vulnerabilities are detected.
+
+Where students can see results:
+
+- **Pull requests:** the `dependency-security` check status appears with other CI checks.
+- **Actions tab:** open a run to see the gate logs and download the vulnerability report artifact.
+
 ## End-to-end tests (PR 9)
 
 A Playwright for .NET E2E project is included at `GalacticMissionControl.Tests.E2E`.
