@@ -37,6 +37,16 @@ Where students can see results:
 - **Pull requests:** the `dependency-security` check status appears with other CI checks.
 - **Actions tab:** open a run to see the gate logs and download the vulnerability report artifact.
 
+## Code scanning with CodeQL (PR 13)
+
+This repository is configured with GitHub CodeQL for **C#** in [`.github/workflows/codeql.yml`](.github/workflows/codeql.yml).
+
+Where students can view code scanning results in GitHub:
+
+- **Security tab → Code scanning alerts:** repository-wide open/closed alerts.
+- **Pull requests:** CodeQL check status appears alongside other CI checks.
+- **Actions tab:** workflow logs for each CodeQL analysis run.
+
 ## End-to-end tests (PR 9)
 
 A Playwright for .NET E2E project is included at `GalacticMissionControl.Tests.E2E`.
