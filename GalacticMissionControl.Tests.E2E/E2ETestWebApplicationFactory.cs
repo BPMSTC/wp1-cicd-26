@@ -28,14 +28,16 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
 
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        // Configure real Kestrel on the pre-selected port so Playwright's browser can reach it.
-        // The base TestServer is in-process only and is not reachable by a real browser.
+        // Start an in-process TestServer host for test services (DI/database reset/seeding).
+        var testHost = builder.Build();
+
+        // Start a second real Kestrel host that Playwright can connect to over HTTP.
         builder.ConfigureWebHost(b => b.UseKestrel().UseUrls(_serverAddress));
         _realHost = builder.Build();
         _realHost.Start();
 
-        // Return the in-process test host, used for DI/database access (ResetDatabaseAsync etc.).
-        return base.CreateHost(builder);
+        testHost.Start();
+        return testHost;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -87,13 +89,13 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
 
     protected override void Dispose(bool disposing)
     {
-        base.Dispose(disposing);
-
         if (disposing)
         {
             _realHost?.Dispose();
             _connection.Dispose();
         }
+
+        base.Dispose(disposing);
     }
 
     private static int GetFreePort()
