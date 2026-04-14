@@ -21,16 +21,18 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
 
         builder.ConfigureServices(services =>
         {
-            var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-            if (dbContextDescriptor is not null)
-            {
-                services.Remove(dbContextDescriptor);
-            }
+            var descriptorsToRemove = services
+                .Where(descriptor =>
+                    descriptor.ServiceType == typeof(ApplicationDbContext)
+                    || descriptor.ServiceType == typeof(DbContextOptions<ApplicationDbContext>)
+                    || descriptor.ServiceType == typeof(DbConnection)
+                    || (descriptor.ServiceType.IsGenericType
+                        && descriptor.ServiceType.GenericTypeArguments.Contains(typeof(ApplicationDbContext))))
+                .ToList();
 
-            var connectionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
-            if (connectionDescriptor is not null)
+            foreach (var descriptor in descriptorsToRemove)
             {
-                services.Remove(connectionDescriptor);
+                services.Remove(descriptor);
             }
 
             services.AddSingleton(_connection);
