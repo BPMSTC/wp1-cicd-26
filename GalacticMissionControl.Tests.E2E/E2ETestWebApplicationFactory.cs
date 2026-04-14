@@ -1,8 +1,9 @@
 using System.Data.Common;
+using System.Net;
+using System.Net.Sockets;
 using GalacticMissionControl.Web.Data;
 using GalacticMissionControl.Web.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +14,21 @@ namespace GalacticMissionControl.Tests.E2E;
 public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly DbConnection _connection = new SqliteConnection("DataSource=:memory:");
-    private string? _serverAddress;
+    private readonly string _serverAddress;
+
+    public E2ETestWebApplicationFactory()
+    {
+        int port = GetFreePort();
+        _serverAddress = $"http://127.0.0.1:{port}";
+    }
+
+    public string ServerAddress => _serverAddress;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
         builder.UseKestrel();
-        builder.UseUrls("http://127.0.0.1:0");
+        builder.UseUrls(_serverAddress);
 
         builder.ConfigureServices(services =>
         {
@@ -54,23 +63,6 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
         });
     }
 
-    public string ServerAddress
-    {
-        get
-        {
-            if (_serverAddress == null)
-            {
-                var addresses = Server.Features.Get<IServerAddressesFeature>()
-                    ?? throw new InvalidOperationException("Server addresses feature not available.");
-
-                _serverAddress = addresses.Addresses.FirstOrDefault()
-                    ?? throw new InvalidOperationException("No server addresses configured.");
-            }
-
-            return _serverAddress;
-        }
-    }
-
     public async Task ResetDatabaseAsync()
     {
         using var scope = Services.CreateScope();
@@ -89,6 +81,16 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
         {
             _connection.Dispose();
         }
+    }
+
+    private static int GetFreePort()
+    {
+        using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+        {
+            ExclusiveAddressUse = true
+        };
+        socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+        return ((IPEndPoint)socket.LocalEndPoint!).Port;
     }
 
     private static void SeedData(ApplicationDbContext dbContext)
