@@ -35,8 +35,9 @@ jobs:
         run: |
           jq -e '
             [
-              .projects[].frameworks[]
-              | (.topLevelPackages[]?, .transitivePackages[]?)
+              (.projects // [])[]
+              | (.frameworks // [])[]
+              | ((.topLevelPackages // [])[], (.transitivePackages // [])[])
               | .vulnerabilities[]?
               | (.severity // "")
               | ascii_downcase
