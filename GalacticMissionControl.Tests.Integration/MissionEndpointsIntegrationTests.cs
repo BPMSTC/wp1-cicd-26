@@ -120,7 +120,8 @@ public class MissionEndpointsIntegrationTests : IClassFixture<IntegrationTestWeb
         var html = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("validation-summary", html);
+        Assert.Contains("Launch New Mission", html);
+        Assert.Contains("__RequestVerificationToken", html);
 
         using var scope = _factory.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
