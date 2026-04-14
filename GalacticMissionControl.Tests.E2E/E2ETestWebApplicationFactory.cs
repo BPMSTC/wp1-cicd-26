@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace GalacticMissionControl.Tests.E2E;
 
@@ -15,6 +16,7 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
 {
     private readonly DbConnection _connection = new SqliteConnection("DataSource=:memory:");
     private readonly string _serverAddress;
+    private IHost? _realHost;
 
     public E2ETestWebApplicationFactory()
     {
@@ -24,11 +26,21 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
 
     public string ServerAddress => _serverAddress;
 
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        // Configure real Kestrel on the pre-selected port so Playwright's browser can reach it.
+        // The base TestServer is in-process only and is not reachable by a real browser.
+        builder.ConfigureWebHost(b => b.UseKestrel().UseUrls(_serverAddress));
+        _realHost = builder.Build();
+        _realHost.Start();
+
+        // Return the in-process test host, used for DI/database access (ResetDatabaseAsync etc.).
+        return base.CreateHost(builder);
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
-        builder.UseKestrel();
-        builder.UseUrls(_serverAddress);
 
         builder.ConfigureServices(services =>
         {
@@ -79,6 +91,7 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
 
         if (disposing)
         {
+            _realHost?.Dispose();
             _connection.Dispose();
         }
     }
