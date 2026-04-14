@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "GitHub Actions: Latest Failed Log",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "$run = gh run list --limit 1 --status failure --json databaseId --jq '.[0].databaseId'; if (-not $run) { Write-Host 'No failed runs found.'; exit 0 }; gh run view $run --log-failed"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "GitHub Actions: Latest Run Full Log",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "$run = gh run list --limit 1 --json databaseId --jq '.[0].databaseId'; if (-not $run) { Write-Host 'No runs found.'; exit 0 }; gh run view $run --log"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
