@@ -14,7 +14,8 @@ namespace GalacticMissionControl.Tests.E2E;
 
 public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly DbConnection _connection = new SqliteConnection("DataSource=:memory:");
+    private SqliteConnection? _connection;
+    private bool _databaseInitialized;
     private readonly string _serverAddress;
     private IHost? _realHost;
 
@@ -22,6 +23,9 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
     {
         int port = GetFreePort();
         _serverAddress = $"http://127.0.0.1:{port}";
+
+        // Ensure native SQLite engine is initialized exactly once per process.
+        SQLitePCL.Batteries_V2.Init();
     }
 
     public string ServerAddress => _serverAddress;
@@ -46,6 +50,12 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
 
         builder.ConfigureServices(services =>
         {
+            if (_connection is null)
+            {
+                _connection = new SqliteConnection("Data Source=:memory:");
+                _connection.Open();
+            }
+
             var descriptorsToRemove = services
                 .Where(descriptor =>
                     descriptor.ServiceType == typeof(ApplicationDbContext)
@@ -60,20 +70,24 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
                 services.Remove(descriptor);
             }
 
-            services.AddSingleton(_connection);
+            services.AddSingleton<DbConnection>(_connection);
             services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
             {
                 var connection = serviceProvider.GetRequiredService<DbConnection>();
                 options.UseSqlite(connection);
             });
 
-            using var scope = services.BuildServiceProvider().CreateScope();
+            using var serviceProvider = services.BuildServiceProvider();
+            using var scope = serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            _connection.Open();
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
-            SeedData(dbContext);
+            if (!_databaseInitialized)
+            {
+                dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
+                SeedData(dbContext);
+                _databaseInitialized = true;
+            }
         });
     }
 
@@ -92,7 +106,8 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
         if (disposing)
         {
             _realHost?.Dispose();
-            _connection.Dispose();
+            _connection?.Dispose();
+            _connection = null;
         }
 
         base.Dispose(disposing);
