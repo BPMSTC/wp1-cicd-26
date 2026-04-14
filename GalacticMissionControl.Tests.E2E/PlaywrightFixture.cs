@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+using Xunit;
 
 namespace GalacticMissionControl.Tests.E2E;
 

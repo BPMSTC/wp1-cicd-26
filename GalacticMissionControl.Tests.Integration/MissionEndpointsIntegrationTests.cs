@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using GalacticMissionControl.Web.Data;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Xunit;
 
 namespace GalacticMissionControl.Tests.Integration;
 
