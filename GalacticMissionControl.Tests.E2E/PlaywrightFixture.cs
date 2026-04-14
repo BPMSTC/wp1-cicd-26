@@ -15,8 +15,10 @@ public sealed class PlaywrightFixture : IAsyncLifetime
     {
         _factory = new E2ETestWebApplicationFactory();
 
-        using var warmupClient = _factory.CreateClient();
-        BaseUrl = warmupClient.BaseAddress?.ToString().TrimEnd('/')
+        // Warmup call ensures the factory is fully initialized before we access ServerAddress
+        _ = _factory.CreateClient();
+
+        BaseUrl = _factory.ServerAddress.TrimEnd('/')
             ?? throw new InvalidOperationException("Unable to determine test server base URL.");
 
         _playwright = await Microsoft.Playwright.Playwright.CreateAsync();

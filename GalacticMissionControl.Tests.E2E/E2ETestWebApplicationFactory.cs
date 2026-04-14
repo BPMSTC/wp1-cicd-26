@@ -2,6 +2,7 @@ using System.Data.Common;
 using GalacticMissionControl.Web.Data;
 using GalacticMissionControl.Web.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace GalacticMissionControl.Tests.E2E;
 public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program>
 {
     private readonly DbConnection _connection = new SqliteConnection("DataSource=:memory:");
+    private string? _serverAddress;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -50,6 +52,23 @@ public sealed class E2ETestWebApplicationFactory : WebApplicationFactory<Program
             dbContext.Database.EnsureCreated();
             SeedData(dbContext);
         });
+    }
+
+    public string ServerAddress
+    {
+        get
+        {
+            if (_serverAddress == null)
+            {
+                var addresses = Server.Features.Get<IServerAddressesFeature>()
+                    ?? throw new InvalidOperationException("Server addresses feature not available.");
+
+                _serverAddress = addresses.Addresses.FirstOrDefault()
+                    ?? throw new InvalidOperationException("No server addresses configured.");
+            }
+
+            return _serverAddress;
+        }
     }
 
     public async Task ResetDatabaseAsync()
